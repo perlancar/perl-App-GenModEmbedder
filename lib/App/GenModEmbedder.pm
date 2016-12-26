@@ -85,7 +85,10 @@ sub gen_mod_embedder {
 
     if ($args{strip_pod}) {
         require Perl::Stripper;
-        my $stripper = Perl::Stripper->new();
+        my $stripper = Perl::Stripper->new(
+            # strip_pod => 1, # the default
+            strip_comment => 0,
+        );
         $source = $stripper->strip($source);
     }
 
