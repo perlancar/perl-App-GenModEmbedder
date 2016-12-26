@@ -93,10 +93,6 @@ sub gen_mod_embedder {
     $source .= "\n";
     $source =~ s/^/#/mg;
 
-    # since literal \' and \\ inside single quote gets converted to literal '
-    # and \, we need to escape the prefix \ to \\ in those cases.
-    $source =~ s/\\(?='|\\)/\\\\$1/g;
-
     my $i0 = "    " x $args{indent_level};
 
     my $preamble = "${i0}# BEGIN EMBEDDING MODULE: mod=$mod ver=$version generator=\"".__PACKAGE__." ".(${__PACKAGE__."::VERSION"})."\" generated-at=\"".(scalar localtime)."\"\n";
