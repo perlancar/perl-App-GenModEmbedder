@@ -9,6 +9,9 @@ use App::GenModEmbedder;
 
 my $res = App::GenModEmbedder::gen_mod_embedder(
     module => 'String::PerlQuote',
+    # we rename to a non-existing name to be able to test loading the embedded
+    # code, otherwise the embedding code will prefer the existing
+    # String::PerlQuote on the filesystem
     as     => 'String::PerlQuote2',
 );
 #diag explain $res;
