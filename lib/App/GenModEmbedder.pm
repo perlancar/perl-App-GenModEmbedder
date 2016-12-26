@@ -98,6 +98,11 @@ sub gen_mod_embedder {
         $source = $stripper->strip($source);
     }
 
+    # XXX this is not perfect/proper
+    if ($mod ne $as) {
+        $source =~ s/\b(package\s+)\Q$mod\E\b/$1 . $as/es;
+    }
+
     $source =~ s/\s+\z//s;
     $source .= "\n";
     $source =~ s/^/#/mg;
