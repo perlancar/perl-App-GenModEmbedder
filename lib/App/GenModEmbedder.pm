@@ -48,6 +48,10 @@ _
                 Complete::Module::complete_module(word=>$args{word});
             },
         },
+        as => {
+            summary => 'Rename the module',
+            schema => 'perl::modname',
+        },
         strip_pod => {
             schema => ['bool*', is=>1],
             default => 1,
@@ -75,6 +79,9 @@ sub gen_mod_embedder {
     my $mod = $args{module};
     (my $mod_pm = "$mod.pm") =~ s!::!/!g;
 
+    my $as = $args{as} // $mod;
+    (my $as_pm = "$as.pm") =~ s!::!/!g;
+
     my $path = Module::Path::More::module_path(module => $mod)
         or return [400, "Can't find module $mod on filesystem"];
 
@@ -99,12 +106,12 @@ sub gen_mod_embedder {
     my $i0 = "    " x $args{indent_level};
 
     my $preamble = "${i0}# BEGIN EMBEDDING MODULE: mod=$mod ver=$version generator=\"".__PACKAGE__." ".(${__PACKAGE__."::VERSION"})."\" generated-at=\"".(scalar localtime)."\"\n";
-    $preamble .= "${i0}unless (eval { require $mod; 1 }) {\n";
+    $preamble .= "${i0}unless (eval { require $as; 1 }) {\n";
     $preamble .= "${i0}    my \$source = '##line ' . (__LINE__+1) . ' \"' . __FILE__ . qq(\"\\n) . <<'EOS';\n";
     my $postamble = "EOS\n";
     $postamble .= "${i0}    \$source =~ s/^#//gm;\n";
     $postamble .= "${i0}    eval \$source; die if \$@;\n";
-    $postamble .= "${i0}    \$INC{'$mod_pm'} = '(set by embedding code in '.__FILE__.')';\n";
+    $postamble .= "${i0}    \$INC{'$as_pm'} = '(set by embedding code in '.__FILE__.')';\n";
     $postamble .= "${i0}}\n";
     $postamble .= "${i0}# END EMBEDDING MODULE\n";
 
