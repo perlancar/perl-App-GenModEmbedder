@@ -42,6 +42,11 @@ _
             schema => 'perl::modname',
             req => 1,
             pos => 0,
+            completion => sub {
+                require Complete::Module;
+                my %args = @_;
+                Complete::Module::complete_module(word=>$args{word});
+            },
         },
         strip_pod => {
             schema => ['bool*', is=>1],
